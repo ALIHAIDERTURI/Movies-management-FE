@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Link } from 'react-router-dom'; // Import Link
-import AuthContext from '../Context/AuthContext'; // Assuming AuthContext is correctly set up
-import { toggleFavorite } from '../services/api'; // Import the API utility function
+import { Link } from 'react-router-dom';
+import AuthContext from '../Context/AuthContext';
+import { toggleFavorite, getFavorites } from '../services/api'; // Import from api.js
 import { MdFavoriteBorder, MdOutlineFavorite } from "react-icons/md";
 import { ClipLoader } from 'react-spinners';
 
 const Favorites = () => {
-  const { user } = useContext(AuthContext); // Get user from context
+  const { user } = useContext(AuthContext);
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -21,31 +21,9 @@ const Favorites = () => {
 
       setLoading(true);
       try {
-        const token = localStorage.getItem('authToken');
-        if (!token) {
-          throw new Error('Authorization token required');
-        }
-
-        const response = await fetch('/api/v1/movies/favorites', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch favorites');
-        }
-
-        const data = await response.json();
-        if (Array.isArray(data)) {
-          setFavorites(data); // Set favorites if they are an array
-        } else {
-          throw new Error('Favorites data is malformed');
-        }
+        const data = await getFavorites(); // Use the axios wrapper here
+        setFavorites(data);
       } catch (error) {
-        console.error('Error fetching favorites:', error);
         setError(error.message);
         setFavorites([]);
       } finally {
@@ -54,9 +32,8 @@ const Favorites = () => {
     };
 
     fetchFavorites();
-  }, [user]); // Dependency on user to reload on user change
+  }, [user]);
 
-  // Handle add/remove favorite
   const handleToggleFavorite = async (movieId) => {
     const token = localStorage.getItem('authToken');
     if (!token) {
@@ -65,24 +42,21 @@ const Favorites = () => {
     }
 
     try {
-      const result = await toggleFavorite(movieId, token); // Using the toggleFavorites function
-      console.log(result); // Handle result if needed
-      // Update the favorites list by re-fetching or updating state
+      const result = await toggleFavorite(movieId);
       setFavorites((prevFavorites) =>
         prevFavorites.some((movie) => movie.movieId === movieId)
           ? prevFavorites.filter((movie) => movie.movieId !== movieId)
-          : [...prevFavorites, result.favorite] // Add to list if not already in favorites
+          : [...prevFavorites, result.favorite]
       );
     } catch (error) {
-      console.error('Error toggling favorite:', error);
       setError(error.message);
     }
   };
 
   if (loading) {
     return <div className="loader">
-    <ClipLoader color="#3498db" loading={loading} size={50} />
-  </div>
+      <ClipLoader color="#3498db" loading={loading} size={50} />
+    </div>;
   }
 
   if (error) {
@@ -117,7 +91,8 @@ const Favorites = () => {
                 className="absolute top-2 right-2 p-2 rounded-full bg-white"
               >
                 {favorites.some((fav) => fav.movieId === movie.movieId)
-                  ? <MdOutlineFavorite size={'30px'} color="red" /> : <MdFavoriteBorder size={'30px'} color="red" />}
+                  ? <MdOutlineFavorite size={'30px'} color="red" />
+                  : <MdFavoriteBorder size={'30px'} color="red" />}
               </button>
             </div>
           ))}
@@ -130,4 +105,3 @@ const Favorites = () => {
 };
 
 export default Favorites;
-
