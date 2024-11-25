@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { fetchMovies, toggleFavorite } from '../services/api'; // Import toggleFavorite
+import { fetchMovies, toggleFavorite } from '../services/api';
 import MovieGrid from '../components/MovieGrid';
 import { ClipLoader } from 'react-spinners';
 import { GrPrevious , GrNext } from "react-icons/gr";
@@ -13,12 +13,10 @@ const Home = () => {
   useEffect(() => {
     const loadMovies = async () => {
       try {
-        const data = await fetchMovies(currentPage); // Fetch movies for the current page
-        console.log('Fetched Movies:', data);
+        const data = await fetchMovies(currentPage); 
         setMovies(data.movies || []); // Set the movies
         setTotalPages(data.totalPages || 1); // Set total pages
       } catch (error) {
-        console.error('Error fetching movies:', error.message);
       } finally {
         setLoading(false);
       }

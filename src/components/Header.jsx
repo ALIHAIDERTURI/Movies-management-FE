@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import AuthContext from "../context/AuthContext";
+import AuthContext from "../Context/AuthContext";
 import { IoMdLogOut } from "react-icons/io";
 import { FcLike } from "react-icons/fc";
 

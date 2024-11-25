@@ -2,10 +2,10 @@ import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import AuthContext from '../Context/AuthContext'; // Adjust the import path
+import AuthContext from '../Context/AuthContext'; 
 
 const Register = () => {
-  const { register } = useContext(AuthContext); // Access register function
+  const { register } = useContext(AuthContext); // Accessing register function
   const [formData, setFormData] = useState({
     name: '',
     email: '',

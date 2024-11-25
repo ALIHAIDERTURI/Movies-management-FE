@@ -8,7 +8,7 @@ import Register from './pages/Register';
 import Header from './components/Header';
 import { AuthProvider } from './Context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
-import NotFound from './pages/NotFound'; // Import NotFound component
+import NotFound from './pages/NotFound'; 
 
 const App = () => {
   return (
